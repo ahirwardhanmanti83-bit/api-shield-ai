@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API-Shield AI | Zero-Overhead Edge Circuit Breaker for LLMs</title>
+  <meta name="description" content="Real-time token runaway cost protection and edge circuit breaker for OpenAI, Claude, and Gemini APIs." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0a0d12',
+            cardDark: '#121720',
+            borderDark: '#1e2638',
+            accentGreen: '#10b981',
+            accentRed: '#ef4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0a0d12; color: #f3f4f6; font-family: ui-sans-serif, system-ui, sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8">
+
+  <!-- TOP HEADER -->
+  <header class="max-w-4xl w-full mx-auto flex items-center justify-between border-b border-borderDark pb-4 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-xl cursor-pointer" onclick="toggleTelemetry()" title="Click to view Telemetry">
+        🛡️
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-black text-xl tracking-wider text-white">API-SHIELD</h1>
+          <span class="text-xs bg-emerald-900/60 text-emerald-400 border border-emerald-700/50 px-1.5 py-0.5 rounded font-mono font-bold">AI</span>
+        </div>
+        <p class="text-xs text-gray-400">Zero-Overhead Edge Protection</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="toggleTelemetry()" class="text-xs px-2.5 py-1.5 rounded border border-borderDark text-gray-400 hover:text-white hover:border-gray-500 transition">
+        &gt;_ Test Bench
+      </button>
+      <a href="https://patreon.com/c/AestheticFindsUSA" target="_blank" onclick="recordConversion(2)" class="text-xs font-bold px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-lg shadow-emerald-900/40 transition">
+        <span>Unlock Edge Code</span>
+        <span class="bg-emerald-950/60 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">$2 USD</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-4xl w-full mx-auto space-y-6 flex-grow">
+
+    <!-- ENGINE STATE BANNER -->
+    <div class="bg-cardDark border border-borderDark rounded-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+      <div>
+        <span class="text-gray-400 block mb-1">ENGINE STATE</span>
+        <div class="flex items-center gap-1.5 text-emerald-400 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Zero-Overhead Edge
+        </div>
+      </div>
+      <div>
+        <span class="text-gray-400 block mb-1">MONTHLY SERVER COST</span>
+        <div class="text-emerald-400 font-mono font-bold">$0.00 / Month</div>
+      </div>
+      <div>
+        <span class="text-gray-400 block mb-1">PROTECTION LAYERS</span>
+        <div class="text-gray-200">Deduplication + Token Bucket</div>
+      </div>
+      <div>
+        <span class="text-gray-400 block mb-1">CIRCUIT BREAKER</span>
+        <div class="text-emerald-400 font-mono font-bold">Armed at $100 Cap</div>
+      </div>
+    </div>
+
+    <!-- SIMULATOR SECTION -->
+    <section class="bg-cardDark border border-borderDark rounded-xl p-5 md:p-6 space-y-5">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          <h2 class="text-lg font-bold tracking-wide uppercase text-white">1. Live Token & Cost Runaway Simulator</h2>
+        </div>
+        <p class="text-xs text-gray-400">
+          Real-time mathematical exposure index and catastrophic dollar loss modeling for LLM deployments.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="runawayBtn" onclick="runSpikeSimulation()" class="text-xs font-bold px-4 py-2 rounded bg-rose-950/80 border border-rose-600/60 hover:bg-rose-900 text-rose-300 flex items-center gap-2 transition">
+          <span>🔥 TEST RUNAWAY SPIKE</span>
+        </button>
+        <span id="simStatus" class="text-xs text-gray-500 font-mono">Status: Idle. Circuit breaker standing by.</span>
+      </div>
+
+      <!-- TARGET LLM MODEL ARCHITECTURE GRID -->
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Target LLM Model Architecture</label>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs" id="modelGrid">
+          
+          <div onclick="selectModel('claude', 3, 15, this)" class="model-card border border-emerald-500 bg-emerald-950/20 rounded-lg p-3 cursor-pointer hover:border-emerald-400 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>Claude 3.5 Sonnet</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$3/1M in &bull; $15/1M out</div>
+          </div>
+
+          <div onclick="selectModel('gpt4o', 2.5, 10, this)" class="model-card border border-borderDark bg-black/40 rounded-lg p-3 cursor-pointer hover:border-gray-500 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>GPT-4o (Omni)</span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$2.5/1M in &bull; $10/1M out</div>
+          </div>
+
+          <div onclick="selectModel('gemini15pro', 1.25, 5, this)" class="model-card border border-borderDark bg-black/40 rounded-lg p-3 cursor-pointer hover:border-gray-500 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>Gemini 1.5 Pro</span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$1.25/1M in &bull; $5/1M out</div>
+          </div>
+
+          <div onclick="selectModel('gemini15flash', 0.075, 0.3, this)" class="model-card border border-borderDark bg-black/40 rounded-lg p-3 cursor-pointer hover:border-gray-500 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>Gemini 1.5 Flash</span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$0.075/1M in &bull; $0.3/1M out</div>
+          </div>
+
+          <div onclick="selectModel('gpt4omini', 0.15, 0.6, this)" class="model-card border border-borderDark bg-black/40 rounded-lg p-3 cursor-pointer hover:border-gray-500 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>GPT-4o Mini</span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$0.15/1M in &bull; $0.6/1M out</div>
+          </div>
+
+          <div onclick="selectModel('deepseek', 0.14, 0.28, this)" class="model-card border border-borderDark bg-black/40 rounded-lg p-3 cursor-pointer hover:border-gray-500 transition">
+            <div class="flex items-center justify-between font-bold text-white mb-1">
+              <span>DeepSeek-V3</span>
+            </div>
+            <div class="text-gray-400 text-[11px] font-mono">$0.14/1M in &bull; $0.28/1M out</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SIMULATION LIVE METRICS DISPLAY -->
+      <div class="bg-black/50 border border-borderDark rounded-lg p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+        <div>
+          <span class="text-gray-500 block">UNPROTECTED LOSS</span>
+          <span id="lossVal" class="text-base text-rose-400 font-bold">$0.00</span>
+        </div>
+        <div>
+          <span class="text-gray-500 block">SHIELD HARD-CAP</span>
+          <span class="text-base text-emerald-400 font-bold">$100.00</span>
+        </div>
+        <div>
+          <span class="text-gray-500 block">DOLLARS SAVED</span>
+          <span id="savedVal" class="text-base text-emerald-400 font-bold">$0.00</span>
+        </div>
+        <div>
+          <span class="text-gray-500 block">TRIGGER LATENCY</span>
+          <span id="latencyVal" class="text-base text-gray-300 font-bold">0.4ms (Edge)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNLOCK CALLOUT SECTION -->
+    <section class="bg-gradient-to-r from-emerald-950/40 via-cardDark to-cardDark border border-emerald-500/30 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-white text-sm">Deploy Zero-Server Circuit Breaker on Cloudflare / Vercel</h3>
+        <p class="text-xs text-gray-400">Copy the production-ready 1-file edge middleware to stop runaway billing permanently.</p>
+      </div>
+      <a href="https://patreon.com/c/AestheticFindsUSA" target="_blank" onclick="recordConversion(2)" class="w-full md:w-auto text-center px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
+        Unlock Edge Template ($2 USD)
+      </a>
+    </section>
+
+  </main>
+
+  <!-- TELEMETRY MODAL (ZERO DEFAULT STATE) -->
+  <div id="telemetryModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-cardDark border border-borderDark rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-borderDark pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-emerald-400 font-mono">📈</span>
+          <h3 class="font-bold text-sm text-white uppercase tracking-wider">Zero-Server Telemetry</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="resetMetricsToZero()" class="text-xs p-1 text-gray-400 hover:text-emerald-400 transition" title="Reset to Zero">
+            🔄 Reset
+          </button>
+          <button onclick="toggleTelemetry()" class="text-gray-400 hover:text-white text-sm">&times;</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+        <div class="bg-black/40 border border-borderDark p-3 rounded-lg">
+          <span class="text-gray-500 block mb-1">TOTAL TRAFFIC</span>
+          <span id="telTraffic" class="text-xl text-white font-bold">0</span>
+          <span class="text-[10px] text-gray-500 block">Clean Client-Side</span>
+        </div>
+        <div class="bg-black/40 border border-borderDark p-3 rounded-lg">
+          <span class="text-gray-500 block mb-1">SIMULATOR RUNS</span>
+          <span id="telRuns" class="text-xl text-emerald-400 font-bold">0</span>
+          <span class="text-[10px] text-gray-500 block">Spikes Tested</span>
+        </div>
+        <div class="bg-black/40 border border-borderDark p-3 rounded-lg">
+          <span class="text-gray-500 block mb-1">CONVERSION INTENT</span>
+          <span id="telIntent" class="text-xl text-emerald-400 font-bold">0</span>
+          <span class="text-[10px] text-gray-500 block">Clicks on $2 / Tiers</span>
+        </div>
+        <div class="bg-black/40 border border-borderDark p-3 rounded-lg">
+          <span class="text-gray-500 block mb-1">PIPELINE YIELD</span>
+          <span id="telYield" class="text-xl text-emerald-400 font-bold">$0.00</span>
+          <span class="text-[10px] text-gray-500 block">Estimated Pipeline</span>
+        </div>
+      </div>
+
+      <div class="text-[11px] text-gray-400 border-t border-borderDark pt-3 flex items-center justify-between">
+        <span>Admin Shortcut: Click Top Shield Icon</span>
+        <button onclick="toggleTelemetry()" class="px-3 py-1 bg-borderDark hover:bg-gray-700 text-white rounded text-xs transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC (CLEAN ZERO DEFAULT & INSTANT ENGINE) -->
+  <script>
+    let selectedRateIn = 3;
+    let selectedRateOut = 15;
+
+    function getMetrics() {
+      const data = localStorage.getItem('api_shield_telemetry_v1');
+      if (!data) {
+        return { traffic: 0, runs: 0, intent: 0, yieldUSD: 0 };
+      }
+      try {
+        return JSON.parse(data);
+      } catch(e) {
+        return { traffic: 0, runs: 0, intent: 0, yieldUSD: 0 };
+      }
+    }
+
+    function saveMetrics(m) {
+      localStorage.setItem('api_shield_telemetry_v1', JSON.stringify(m));
+      updateTelemetryUI();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      let m = getMetrics();
+      if (!sessionStorage.getItem('visited')) {
+        sessionStorage.setItem('visited', 'true');
+        m.traffic += 1;
+        saveMetrics(m);
+      } else {
+        updateTelemetryUI();
+      }
+    });
+
+    function updateTelemetryUI() {
+      const m = getMetrics();
+      document.getElementById('telTraffic').innerText = m.traffic;
+      document.getElementById('telRuns').innerText = m.runs;
+      document.getElementById('telIntent').innerText = m.intent;
+      document.getElementById('telYield').innerText = '$' + m.yieldUSD.toFixed(2);
+    }
+
+    function resetMetricsToZero() {
+      const clean = { traffic: 0, runs: 0, intent: 0, yieldUSD: 0 };
+      saveMetrics(clean);
+      sessionStorage.removeItem('visited');
+      alert('Telemetry dashboard has been reset to strictly 0.');
+    }
+
+    function toggleTelemetry() {
+      const modal = document.getElementById('telemetryModal');
+      modal.classList.toggle('hidden');
+      updateTelemetryUI();
+    }
+
+    function selectModel(name, rateIn, rateOut, el) {
+      selectedRateIn = rateIn;
+      selectedRateOut = rateOut;
+      document.querySelectorAll('.model-card').forEach(c => {
+        c.classList.remove('border-emerald-500', 'bg-emerald-950/20');
+        c.classList.add('border-borderDark', 'bg-black/40');
+      });
+      el.classList.add('border-emerald-500', 'bg-emerald-950/20');
+      el.classList.remove('border-borderDark', 'bg-black/40');
+    }
+
+    function runSpikeSimulation() {
+      const btn = document.getElementById('runawayBtn');
+      const status = document.getElementById('simStatus');
+      btn.disabled = true;
+      status.innerText = "Simulating recursive runaway spike (10,000 req/min)...";
+      status.className = "text-xs text-rose-400 font-mono animate-pulse";
+
+      let m = getMetrics();
+      m.runs += 1;
+      saveMetrics(m);
+
+      setTimeout(() => {
+        const unprotected = ((selectedRateIn * 20) + (selectedRateOut * 80)).toFixed(2);
+        const saved = (unprotected - 100).toFixed(2);
+
+        document.getElementById('lossVal').innerText = '$' + unprotected;
+        document.getElementById('savedVal').innerText = '$' + (saved > 0 ? saved : '0.00');
+        status.innerText = "🚨 CIRCUIT BREAKER TRIGGERED: Request killed at $100 cap. 0.4ms latency.";
+        status.className = "text-xs text-emerald-400 font-mono";
+        btn.disabled = false;
+      }, 700);
+    }
+
+    function recordConversion(amount) {
+      let m = getMetrics();
+      m.intent += 1;
+      m.yieldUSD += amount;
+      saveMetrics(m);
+    }
+  </script>
+</body>
+  </html>
