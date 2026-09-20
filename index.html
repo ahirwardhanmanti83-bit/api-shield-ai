@@ -1,15 +1,14 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API-Shield AI | Zero-Server-Cost AI API Runaway Cost Firewall</title>
-  <meta name="description" content="Zero-overhead edge limiter and real-time token runaway cost protection for LLM APIs (GPT-4o, Claude 3.5 Sonnet, Gemini 1.5)." />
+  <title>API-Shield AI — Enterprise Edge Circuit Breaker for LLM Workloads</title>
+  <meta name="description" content="Autonomous zero-server-cost circuit breaker preventing runaway LLM billing loops and token spikes across OpenAI, Anthropic, and Google GenAI APIs." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -19,284 +18,276 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            bgDark: '#080a0f',
-            cardDark: '#0f141f',
-            panelDark: '#141b29',
-            borderDark: '#1e283d',
-            neonGreen: '#00df82',
-            neonRed: '#ff3366',
-            neonYellow: '#ffbe0b'
+            terminalBlack: '#06080d',
+            surfaceCard: '#0c111c',
+            surfaceElevated: '#121929',
+            edgeBorder: '#1c283f',
+            shieldGreen: '#00e599',
+            alertRed: '#ff2a5f',
+            goldPro: '#f59e0b'
           }
         }
       }
     }
   </script>
   <style>
-    body { background-color: #080a0f; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; }
-    input[type=range] { accent-color: #00df82; }
-    .glow-box-green { box-shadow: 0 0 25px -5px rgba(0, 223, 130, 0.25); }
-    .glow-box-red { box-shadow: 0 0 25px -5px rgba(255, 51, 102, 0.25); }
+    body { background-color: #06080d; color: #f1f5f9; font-family: 'JetBrains Mono', monospace; }
+    input[type=range] { accent-color: #00e599; }
+    .mono-num { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+    .neon-border-green { box-shadow: 0 0 15px -3px rgba(0, 229, 153, 0.25); }
+    .neon-border-red { box-shadow: 0 0 20px -3px rgba(255, 42, 95, 0.3); }
   </style>
 </head>
-<body class="min-h-screen flex flex-col p-3 md:p-8 selection:bg-emerald-500 selection:text-black">
+<body class="min-h-screen flex flex-col p-3 md:p-8 selection:bg-shieldGreen selection:text-black">
 
-  <!-- TOP BAR -->
-  <header class="max-w-4xl w-full mx-auto flex items-center justify-between border-b border-borderDark pb-4 mb-6">
+  <!-- SOVEREIGN ENTERPRISE NAV -->
+  <header class="max-w-5xl w-full mx-auto flex items-center justify-between border-b border-edgeBorder pb-4 mb-6">
     <div class="flex items-center gap-3">
-      <div onclick="openFounderAdmin()" class="w-10 h-10 rounded-xl bg-emerald-950/60 border border-emerald-500/50 flex items-center justify-center text-emerald-400 cursor-pointer hover:border-emerald-400 transition" title="Open Founder Telemetry & Purchase Ledger">
-        <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
+      <!-- HARDCODED BULLETPROOF SHIELD EMBLEM -->
+      <div onclick="openFounderConsole()" class="w-11 h-11 rounded-xl bg-emerald-950/80 border border-shieldGreen/60 flex items-center justify-center cursor-pointer hover:border-shieldGreen transition neon-border-green" title="Open Sovereign Founder Telemetry">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="font-extrabold text-lg tracking-wider text-white">API-SHIELD</span>
-          <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-700/60 px-1.5 py-0.5 rounded font-bold">AI</span>
+          <span class="font-extrabold text-xl tracking-wider text-white">API-SHIELD</span>
+          <span class="text-[11px] bg-emerald-950 text-shieldGreen border border-emerald-600/70 px-2 py-0.5 rounded font-bold">EDGE OS</span>
         </div>
-        <p class="text-[11px] text-gray-500">Zero-Server-Cost Edge Firewall</p>
+        <p class="text-xs text-gray-400">Autonomous Runaway Cost Firebreak &bull; Zero Server Overhead</p>
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
-      <button onclick="openFounderAdmin()" class="text-xs px-2.5 py-1.5 rounded-lg border border-borderDark bg-panelDark text-gray-300 hover:text-white flex items-center gap-1.5 transition">
-        <span class="text-emerald-400 font-bold">&gt;_</span>
-        <span>Test Bench</span>
+    <div class="flex items-center gap-2 md:gap-3">
+      <button onclick="openFounderConsole()" class="text-xs px-3 py-1.5 rounded-lg border border-edgeBorder bg-surfaceElevated text-gray-300 hover:text-white flex items-center gap-1.5 transition">
+        <span class="text-shieldGreen font-bold">&gt;_</span>
+        <span>Audit Console</span>
       </button>
-      <a href="#monetization" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-lg shadow-emerald-950 transition">
-        <span>Unlock Edge Code</span>
-        <span class="bg-emerald-950/80 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">$2 / ₹99</span>
+      <a href="#commercial" class="text-xs font-bold px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2 shadow-lg shadow-emerald-950 transition">
+        <span>Deploy Edge Shield</span>
+        <span class="bg-emerald-950/80 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">$2 USD</span>
       </a>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-4xl w-full mx-auto space-y-6 flex-grow">
+  <!-- ROOT WORKSPACE -->
+  <main class="max-w-5xl w-full mx-auto space-y-6 flex-grow">
 
-    <!-- ENGINE STATE SUMMARY -->
-    <div class="bg-cardDark border border-borderDark rounded-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+    <!-- RUNTIME ARCHITECTURE METRICS -->
+    <div class="bg-surfaceCard border border-edgeBorder rounded-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
       <div>
-        <span class="text-gray-500 text-[10px] block mb-1">ENGINE STATE</span>
-        <div class="flex items-center gap-1.5 text-emerald-400 font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Zero-Overhead Edge
+        <span class="text-gray-400 text-[10px] uppercase block mb-1">EXECUTION PLATFORM</span>
+        <div class="flex items-center gap-2 text-shieldGreen font-bold">
+          <span class="w-2 h-2 rounded-full bg-shieldGreen animate-pulse"></span>
+          Edge Middleware (Cloudflare/Vercel)
         </div>
       </div>
       <div>
-        <span class="text-gray-500 text-[10px] block mb-1">MONTHLY SERVER COST</span>
-        <div class="text-emerald-400 font-bold">$0.00 / Month</div>
+        <span class="text-gray-400 text-[10px] uppercase block mb-1">INFRASTRUCTURE COST</span>
+        <div class="text-shieldGreen font-bold text-sm">$0.00 / Month</div>
       </div>
       <div>
-        <span class="text-gray-500 text-[10px] block mb-1">PROTECTION LAYERS</span>
-        <div class="text-gray-200">Deduplication + Token Bucket</div>
+        <span class="text-gray-400 text-[10px] uppercase block mb-1">TRIPWIRE LATENCY</span>
+        <div class="text-gray-200 font-semibold">0.4ms In-Memory SHA-256</div>
       </div>
       <div>
-        <span class="text-gray-500 text-[10px] block mb-1">CIRCUIT BREAKER</span>
-        <div class="text-emerald-400 font-bold">Armed at $100 Cap</div>
+        <span class="text-gray-400 text-[10px] uppercase block mb-1">HARD CAP STATUS</span>
+        <div class="text-shieldGreen font-bold text-sm">Armed at $100.00 Cap</div>
       </div>
     </div>
 
-    <!-- MODULE 1: SIMULATOR -->
-    <section class="bg-cardDark border border-borderDark rounded-2xl p-5 md:p-6 space-y-5">
+    <!-- MODULE 1: INTERACTIVE CATASTROPHIC SPIKE SIMULATOR -->
+    <section class="bg-surfaceCard border border-edgeBorder rounded-2xl p-5 md:p-6 space-y-5">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-            <h2 class="text-base font-extrabold tracking-wide uppercase text-white">1. LIVE TOKEN & COST RUNAWAY SIMULATOR</h2>
+            <span class="w-2.5 h-2.5 rounded-full bg-alertRed"></span>
+            <h2 class="text-base font-extrabold tracking-wide uppercase text-white">1. Real-Time Token Runaway & Financial Exposure Index</h2>
           </div>
           <p class="text-xs text-gray-400">
-            Real-time mathematical exposure index and catastrophic dollar loss modeling for LLM deployments.
+            Model catastrophic dollar burn from recursive agent loops, prompt injection scraping, and RAG hallucinations.
           </p>
         </div>
-        <button id="simBtn" onclick="toggleSimulation()" class="self-start md:self-auto text-xs font-bold px-4 py-2.5 rounded-xl bg-rose-950/80 border border-rose-600/70 hover:bg-rose-900 text-rose-300 flex items-center gap-2 transition glow-box-red">
-          <span id="simBtnIcon">🔥</span>
-          <span id="simBtnText">TEST RUNAWAY SPIKE</span>
+        <button id="simBtn" onclick="toggleSpikeSimulation()" class="self-start md:self-auto text-xs font-bold px-4 py-2.5 rounded-xl bg-rose-950/80 border border-rose-600/70 hover:bg-rose-900 text-rose-300 flex items-center gap-2 transition neon-border-red">
+          <span id="simIcon">🔥</span>
+          <span id="simText">TRIGGER RUNAWAY SPIKE</span>
         </button>
       </div>
 
-      <!-- BREAKER ENGAGED ALERT BOX -->
-      <div id="breakerBox" class="bg-emerald-950/30 border border-emerald-500/50 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <!-- HARDWARE INTERCEPTION TICKET -->
+      <div id="interceptionBox" class="bg-emerald-950/30 border border-shieldGreen/40 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-emerald-950 border border-emerald-500/60 flex items-center justify-center text-emerald-400">
-            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          <div class="w-10 h-10 rounded-lg bg-emerald-950 border border-shieldGreen/60 flex items-center justify-center text-shieldGreen">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-white tracking-wider">BREAKER ENGAGED: LOSS ARRESTED</span>
-              <span class="text-[10px] bg-emerald-900/80 text-emerald-300 border border-emerald-600 px-1.5 py-0.5 rounded font-bold">PROTECTED (HTTP 503 HALT)</span>
+              <span class="text-xs font-bold text-white tracking-wider">CIRCUIT TRIPWIRE: ACTIVE LOSS INTERCEPTION</span>
+              <span class="text-[10px] bg-emerald-900/80 text-emerald-300 border border-shieldGreen px-2 py-0.5 rounded font-bold">HTTP 503 EMERGENCY HALT</span>
             </div>
             <p class="text-[11px] text-gray-400 mt-0.5">
-              API-Shield intercepted runaway call and dropped downstream provider token consumption to $0.00.
+              API-Shield killed downstream provider socket. Zero billable upstream tokens burned beyond cap.
             </p>
           </div>
         </div>
         <div class="flex items-center gap-6 text-xs font-mono">
           <div>
-            <span class="text-gray-500 text-[10px] block">TOTAL LOSS ACCRUED</span>
-            <span id="lossAccrued" class="text-emerald-400 font-bold text-base">$0.9914</span>
+            <span class="text-gray-400 text-[10px] block">TOTAL LOSS ACCRUED</span>
+            <span id="lossTicker" class="text-shieldGreen font-bold text-base mono-num">$0.9914</span>
           </div>
           <div>
-            <span class="text-gray-500 text-[10px] block">BURN RATE</span>
-            <span class="text-gray-300 font-bold text-base">$0.00 / sec</span>
+            <span class="text-gray-400 text-[10px] block">CURRENT BURN</span>
+            <span class="text-gray-300 font-bold text-base mono-num">$0.00 / sec</span>
           </div>
         </div>
       </div>
 
-      <!-- TARGET LLM MODEL ARCHITECTURE -->
+      <!-- TARGET LLM MODEL MATRIX -->
       <div>
-        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">TARGET LLM MODEL ARCHITECTURE</label>
+        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">TARGET PROVIDER MODEL PRICING MATRIX</label>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           
-          <div onclick="selectModel('claude', 3, 15, this)" class="model-card border-2 border-emerald-500 bg-emerald-950/20 rounded-xl p-3 cursor-pointer">
+          <div onclick="selectModel('claude', 3.0, 15.0, this)" class="model-tile border-2 border-shieldGreen bg-emerald-950/20 rounded-xl p-3 cursor-pointer">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>Claude 3.5 Sonnet</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-2 h-2 rounded-full bg-shieldGreen"></span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$3/1M in &bull; $15/1M out</div>
+            <div class="text-gray-400 text-[11px]">$3.00/1M in &bull; $15.00/1M out</div>
           </div>
 
-          <div onclick="selectModel('gpt4o', 2.5, 10, this)" class="model-card border border-borderDark bg-panelDark/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
+          <div onclick="selectModel('gpt4o', 2.5, 10.0, this)" class="model-tile border border-edgeBorder bg-surfaceElevated/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>GPT-4o (Omni)</span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$2.5/1M in &bull; $10/1M out</div>
+            <div class="text-gray-400 text-[11px]">$2.50/1M in &bull; $10.00/1M out</div>
           </div>
 
-          <div onclick="selectModel('gemini15pro', 1.25, 5, this)" class="model-card border border-borderDark bg-panelDark/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
+          <div onclick="selectModel('gemini15pro', 1.25, 5.0, this)" class="model-tile border border-edgeBorder bg-surfaceElevated/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>Gemini 1.5 Pro</span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$1.25/1M in &bull; $5/1M out</div>
+            <div class="text-gray-400 text-[11px]">$1.25/1M in &bull; $5.00/1M out</div>
           </div>
 
-          <div onclick="selectModel('gemini15flash', 0.075, 0.3, this)" class="model-card border border-borderDark bg-panelDark/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
+          <div onclick="selectModel('gemini15flash', 0.075, 0.3, this)" class="model-tile border border-edgeBorder bg-surfaceElevated/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>Gemini 1.5 Flash</span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$0.075/1M in &bull; $0.3/1M out</div>
+            <div class="text-gray-400 text-[11px]">$0.075/1M in &bull; $0.30/1M out</div>
           </div>
 
-          <div onclick="selectModel('gpt4omini', 0.15, 0.6, this)" class="model-card border border-borderDark bg-panelDark/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
+          <div onclick="selectModel('gpt4omini', 0.15, 0.6, this)" class="model-tile border border-edgeBorder bg-surfaceElevated/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>GPT-4o Mini</span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$0.15/1M in &bull; $0.6/1M out</div>
+            <div class="text-gray-400 text-[11px]">$0.15/1M in &bull; $0.60/1M out</div>
           </div>
 
-          <div onclick="selectModel('deepseek', 0.14, 0.28, this)" class="model-card border border-borderDark bg-panelDark/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
+          <div onclick="selectModel('deepseek', 0.14, 0.28, this)" class="model-tile border border-edgeBorder bg-surfaceElevated/60 rounded-xl p-3 cursor-pointer hover:border-gray-500">
             <div class="flex items-center justify-between font-bold text-white mb-1">
               <span>DeepSeek-V3</span>
             </div>
-            <div class="text-gray-500 text-[11px] font-mono">$0.14/1M in &bull; $0.28/1M out</div>
+            <div class="text-gray-400 text-[11px]">$0.14/1M in &bull; $0.28/1M out</div>
           </div>
 
         </div>
       </div>
 
-      <!-- TRAFFIC & TOKEN SLIDERS -->
+      <!-- PARAMETER SLIDERS -->
       <div class="space-y-4 pt-2">
         <div>
           <div class="flex items-center justify-between text-xs mb-1">
-            <span class="text-gray-400 font-bold uppercase">EXPECTED NORMAL TRAFFIC</span>
-            <span id="trafficLabel" class="text-emerald-400 font-bold">30 req/min (1,800/hr)</span>
+            <span class="text-gray-400 font-bold uppercase">NORMAL WORKLOAD CONCURRENCY</span>
+            <span id="trafficLabel" class="text-shieldGreen font-bold">30 req/min (1,800/hr)</span>
           </div>
-          <input type="range" min="5" max="250" value="30" oninput="updateSliders()" id="trafficRange" class="w-full h-1.5 bg-borderDark rounded-lg cursor-pointer">
+          <input type="range" min="5" max="300" value="30" oninput="recomputeFinancialIndex()" id="trafficRange" class="w-full h-1.5 bg-edgeBorder rounded-lg cursor-pointer">
           <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-            <span>5 RPM (MVP/Dev)</span>
-            <span>60 RPM (Standard SaaS)</span>
-            <span>250 RPM (High Velocity)</span>
+            <span>5 RPM (Early Stage)</span>
+            <span>60 RPM (Production SaaS)</span>
+            <span>300 RPM (High Velocity API)</span>
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between text-xs mb-1">
-            <span class="text-gray-400 font-bold uppercase">AVG PROMPT TOKENS</span>
-            <span id="promptLabel" class="text-white font-bold bg-panelDark px-2 py-0.5 rounded border border-borderDark">2,400 tkn</span>
+            <span class="text-gray-400 font-bold uppercase">AVERAGE PROMPT INPUT PAYLOAD</span>
+            <span id="promptLabel" class="text-white font-bold bg-surfaceElevated px-2 py-0.5 rounded border border-edgeBorder">2,400 tokens</span>
           </div>
-          <input type="range" min="500" max="16000" step="500" value="2400" oninput="updateSliders()" id="promptRange" class="w-full h-1.5 bg-borderDark rounded-lg cursor-pointer">
+          <input type="range" min="500" max="16000" step="500" value="2400" oninput="recomputeFinancialIndex()" id="promptRange" class="w-full h-1.5 bg-edgeBorder rounded-lg cursor-pointer">
           <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-            <span>500 (Chat)</span>
-            <span>4k (Docs)</span>
-            <span>16k (Heavy RAG)</span>
+            <span>500 (Simple Prompts)</span>
+            <span>4,000 (Context Documents)</span>
+            <span>16,000 (Dense RAG Ingestion)</span>
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between text-xs mb-1">
-            <span class="text-gray-400 font-bold uppercase">AVG OUTPUT TOKENS</span>
-            <span id="outputLabel" class="text-white font-bold bg-panelDark px-2 py-0.5 rounded border border-borderDark">3,600 tkn</span>
+            <span class="text-gray-400 font-bold uppercase">AVERAGE COMPLETION OUTPUT</span>
+            <span id="outputLabel" class="text-white font-bold bg-surfaceElevated px-2 py-0.5 rounded border border-edgeBorder">3,600 tokens</span>
           </div>
-          <input type="range" min="200" max="4000" step="200" value="3600" oninput="updateSliders()" id="outputRange" class="w-full h-1.5 bg-borderDark rounded-lg cursor-pointer">
+          <input type="range" min="200" max="8000" step="200" value="3600" oninput="recomputeFinancialIndex()" id="outputRange" class="w-full h-1.5 bg-edgeBorder rounded-lg cursor-pointer">
           <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-            <span>200 (Short)</span>
-            <span>1k (Structured)</span>
-            <span>4k (Max Out)</span>
+            <span>200 (Short Answers)</span>
+            <span>1,000 (Structured JSON)</span>
+            <span>8,000 (Long Form Code Generation)</span>
           </div>
         </div>
       </div>
 
-      <!-- RUNAWAY INCIDENT SCENARIOS -->
+      <!-- INCIDENT SCENARIOS -->
       <div>
-        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">RUNAWAY INCIDENT SCENARIO MODE</label>
+        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">RUNAWAY FAILURE MODES</label>
         <div class="space-y-2 text-xs">
           
-          <label class="flex items-start gap-3 p-3 rounded-xl border border-borderDark bg-panelDark/40 cursor-pointer hover:border-gray-500 transition">
-            <input type="radio" name="scenario" value="agent" checked onchange="updateSliders()" class="mt-1 accent-emerald-500">
+          <label class="flex items-start gap-3 p-3 rounded-xl border border-edgeBorder bg-surfaceElevated/40 cursor-pointer hover:border-gray-500 transition">
+            <input type="radio" name="failureMode" value="agent" checked onchange="recomputeFinancialIndex()" class="mt-1 accent-emerald-500">
             <div class="flex-grow">
               <div class="flex items-center justify-between">
-                <span class="font-bold text-white">Autonomous Agent Recursive Loop</span>
-                <span class="text-[10px] bg-rose-950/80 text-rose-400 border border-rose-700/60 px-1.5 py-0.5 rounded font-bold">Catastrophic</span>
+                <span class="font-bold text-white">Autonomous Agent Recursive Tool Loop</span>
+                <span class="text-[10px] bg-rose-950/80 text-alertRed border border-rose-700/60 px-2 py-0.5 rounded font-bold">Catastrophic Surge</span>
               </div>
-              <p class="text-[11px] text-gray-400 mt-1">LLM tool-call output fails parsing, triggering an unconstrained retry loop every 500ms without base-case exit condition.</p>
-              <div class="flex gap-4 text-[10px] text-gray-500 mt-2 font-mono">
-                <span>Rate Spike: +12x</span>
-                <span>Payload Surge: +1.8x</span>
-                <span>Window: 8h continuous</span>
+              <p class="text-[11px] text-gray-400 mt-1">Model tool-call parsing throws non-fatal exception, looping 10x/sec indefinitely without human checkpoint.</p>
+              <div class="flex gap-4 text-[10px] text-gray-400 mt-2 font-mono">
+                <span>Concurrency: +12x</span>
+                <span>Payload Mult: +1.8x</span>
+                <span>Window: 8h Undetected</span>
               </div>
             </div>
           </label>
 
-          <label class="flex items-start gap-3 p-3 rounded-xl border border-borderDark bg-panelDark/40 cursor-pointer hover:border-gray-500 transition">
-            <input type="radio" name="scenario" value="ddos" onchange="updateSliders()" class="mt-1 accent-emerald-500">
+          <label class="flex items-start gap-3 p-3 rounded-xl border border-edgeBorder bg-surfaceElevated/40 cursor-pointer hover:border-gray-500 transition">
+            <input type="radio" name="failureMode" value="ddos" onchange="recomputeFinancialIndex()" class="mt-1 accent-emerald-500">
             <div class="flex-grow">
               <div class="flex items-center justify-between">
-                <span class="font-bold text-white">Unauthenticated Public Webhook DDoS</span>
-                <span class="text-[10px] bg-rose-950/80 text-rose-400 border border-rose-700/60 px-1.5 py-0.5 rounded font-bold">Catastrophic</span>
+                <span class="font-bold text-white">Public API Scraping & Webhook Flood</span>
+                <span class="text-[10px] bg-rose-950/80 text-alertRed border border-rose-700/60 px-2 py-0.5 rounded font-bold">Catastrophic Surge</span>
               </div>
-              <p class="text-[11px] text-gray-400 mt-1">Scraping bots flood your frontend /api/chat webhook proxy with concurrent automated generative prompts.</p>
-              <div class="flex gap-4 text-[10px] text-gray-500 mt-2 font-mono">
-                <span>Rate Spike: +25x</span>
-                <span>Payload Surge: +1x</span>
-                <span>Window: 12h continuous</span>
+              <p class="text-[11px] text-gray-400 mt-1">Unauthenticated endpoint probed by botnets executing high-temperature generative prompts.</p>
+              <div class="flex gap-4 text-[10px] text-gray-400 mt-2 font-mono">
+                <span>Concurrency: +25x</span>
+                <span>Payload Mult: +1.0x</span>
+                <span>Window: 12h Overnight</span>
               </div>
             </div>
           </label>
 
-          <label class="flex items-start gap-3 p-3 rounded-xl border border-borderDark bg-panelDark/40 cursor-pointer hover:border-gray-500 transition">
-            <input type="radio" name="scenario" value="rag" onchange="updateSliders()" class="mt-1 accent-emerald-500">
+          <label class="flex items-start gap-3 p-3 rounded-xl border border-edgeBorder bg-surfaceElevated/40 cursor-pointer hover:border-gray-500 transition">
+            <input type="radio" name="failureMode" value="rag" onchange="recomputeFinancialIndex()" class="mt-1 accent-emerald-500">
             <div class="flex-grow">
               <div class="flex items-center justify-between">
-                <span class="font-bold text-white">RAG Chunk Retrieval Hallucination</span>
-                <span class="text-[10px] bg-amber-950/80 text-amber-400 border border-amber-700/60 px-1.5 py-0.5 rounded font-bold">Moderate</span>
+                <span class="font-bold text-white">RAG Chunk Hallucination & Vector Bloat</span>
+                <span class="text-[10px] bg-amber-950/80 text-amber-400 border border-amber-700/60 px-2 py-0.5 rounded font-bold">High Severity</span>
               </div>
-              <p class="text-[11px] text-gray-400 mt-1">Vector search returns bloated 32k raw context chunks per user click, inflating prompt token consumption by 800%.</p>
-              <div class="flex gap-4 text-[10px] text-gray-500 mt-2 font-mono">
-                <span>Rate Spike: +3.5x</span>
-                <span>Payload Surge: +7.5x</span>
-                <span>Window: 24h continuous</span>
-              </div>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-3 p-3 rounded-xl border border-borderDark bg-panelDark/40 cursor-pointer hover:border-gray-500 transition">
-            <input type="radio" name="scenario" value="cron" onchange="updateSliders()" class="mt-1 accent-emerald-500">
-            <div class="flex-grow">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-white">Zombie Overnight Cron Worker</span>
-                <span class="text-[10px] bg-amber-950/80 text-amber-400 border border-amber-700/60 px-1.5 py-0.5 rounded font-bold">Moderate</span>
-              </div>
-              <p class="text-[11px] text-gray-400 mt-1">A background data sync batch script executes hourly, reprocessing already summarized documents over an entire weekend.</p>
-              <div class="flex gap-4 text-[10px] text-gray-500 mt-2 font-mono">
-                <span>Rate Spike: +6x</span>
-                <span>Payload Surge: +2.2x</span>
-                <span>Window: 48h continuous</span>
+              <p class="text-[11px] text-gray-400 mt-1">Retrieval pipeline injects unpruned 32k raw chunk context on every keystroke, 8x-ing normal billing.</p>
+              <div class="flex gap-4 text-[10px] text-gray-400 mt-2 font-mono">
+                <span>Concurrency: +3.5x</span>
+                <span>Payload Mult: +7.5x</span>
+                <span>Window: 24h Full Day</span>
               </div>
             </div>
           </label>
@@ -304,66 +295,68 @@
         </div>
       </div>
 
-      <!-- RUNAWAY RISK COMPUTATION INDEX -->
-      <div class="bg-black/60 border border-borderDark rounded-xl p-4 space-y-4">
+      <!-- RISK BAR -->
+      <div class="bg-black/70 border border-edgeBorder rounded-xl p-4 space-y-4">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-gray-400">RUNAWAY RISK INDEX</span>
-          <span class="text-xs bg-rose-950 text-rose-400 border border-rose-700/60 px-2 py-0.5 rounded font-bold">CATASTROPHIC RISK</span>
+          <span class="text-xs font-bold text-gray-400">FINANCIAL DISASTER SEVERITY</span>
+          <span class="text-xs bg-rose-950 text-alertRed border border-rose-700/60 px-2.5 py-0.5 rounded font-bold">CRITICAL EXPOSURE</span>
         </div>
 
         <div class="flex items-baseline gap-2">
-          <span class="text-4xl font-extrabold text-rose-500">100</span>
+          <span class="text-4xl font-extrabold text-alertRed">100</span>
           <span class="text-gray-500 text-sm">/ 100</span>
-          <span class="text-xs text-gray-400 ml-auto font-mono">21.6x Normal Velocity</span>
+          <span class="text-xs text-gray-400 ml-auto font-mono">21.6x Unchecked Velocity</span>
         </div>
 
-        <div class="w-full bg-borderDark h-2 rounded-full overflow-hidden">
-          <div class="bg-rose-500 h-full w-full"></div>
+        <div class="w-full bg-edgeBorder h-2 rounded-full overflow-hidden">
+          <div class="bg-alertRed h-full w-full"></div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 text-[11px] text-gray-400 border-t border-borderDark/60 pt-3">
+        <div class="grid grid-cols-3 gap-2 text-[11px] text-gray-400 border-t border-edgeBorder/60 pt-3">
           <div>
-            <span class="text-gray-500 block">Spike Velocity:</span>
-            <span class="text-white font-bold">360 req/min (65,340 tkn/s)</span>
+            <span class="text-gray-400 block">Peak Token Flow:</span>
+            <span class="text-white font-bold">65,340 tkn/sec</span>
           </div>
           <div>
-            <span class="text-gray-500 block">Burn Rate per Second:</span>
-            <span class="text-rose-400 font-bold">$0.669/sec</span>
+            <span class="text-gray-400 block">Loss Burn Velocity:</span>
+            <span class="text-alertRed font-bold">$0.669 / sec</span>
           </div>
           <div>
-            <span class="text-gray-500 block">Time to Exhaust Budget ($100):</span>
-            <span class="text-amber-400 font-bold">2 minutes</span>
+            <span class="text-gray-400 block">Time to Exhaust $100:</span>
+            <span class="text-amber-400 font-bold">2.4 Minutes</span>
           </div>
         </div>
       </div>
 
-      <!-- LOSS CARDS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-        <div class="bg-panelDark/40 border border-borderDark p-4 rounded-xl">
+      <!-- FINANCIAL ACCRUAL CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+        <div class="bg-surfaceElevated/50 border border-edgeBorder p-4 rounded-xl">
           <div class="flex items-center justify-between text-gray-400 mb-1">
-            <span>⏱ 1-HOUR RUNAWAY LEAK</span>
+            <span>⏱ 1-HOUR UNCHECKED LEAK</span>
             <span class="text-[10px] text-gray-500">vs $111.51 normal</span>
           </div>
-          <div class="text-2xl font-bold text-amber-400" id="leak1h">$2,408.62</div>
-          <span class="text-[10px] text-gray-500">Short unconstrained spike</span>
+          <div class="text-2xl font-bold text-amber-400 mono-num" id="leak1h">$2,408.62</div>
+          <span class="text-[10px] text-gray-400">Short unconstrained spike</span>
         </div>
 
         <div class="bg-rose-950/20 border border-rose-800/40 p-4 rounded-xl">
           <div class="flex items-center justify-between text-rose-300 mb-1">
             <span>⚠️ 24-HOUR OVERNIGHT DISASTER</span>
-            <span class="text-[10px] text-rose-400 font-bold">Catastrophic balance burn</span>
+            <span class="text-[10px] text-alertRed font-bold">Catastrophic Balance Burn</span>
           </div>
-          <div class="text-2xl font-bold text-rose-400" id="leak24h">$57,806.78</div>
-          <span class="text-[10px] text-gray-500">Weekend loop undetected</span>
+          <div class="text-2xl font-bold text-alertRed mono-num" id="leak24h">$57,806.78</div>
+          <span class="text-[10px] text-gray-400">Weekend loop undetected</span>
         </div>
       </div>
 
-      <div class="bg-panelDark/20 border border-borderDark/60 p-3 rounded-lg flex items-center justify-between text-xs font-mono">
-        <span class="text-gray-400">Normal Baseline Cost (30 Days):</span>
-        <span class="text-emerald-400 font-bold text-sm" id="baselineCost">$80,287.20</span>
+      <div class="bg-surfaceElevated/20 border border-edgeBorder/60 p-3.5 rounded-lg flex items-center justify-between text-xs">
+        <span class="text-gray-400">Estimated 30-Day Normal Baseline:</span>
+        <span class="text-shieldGreen font-bold text-sm mono-num" id="baselineCost">$80,287.20</span>
       </div>
 
     </section>
 
-    <!-- MODULE 2: CODE GENERATOR -->
-    <section class="bg
+    <!-- MODULE 2: CODE GENERATION ENGINE -->
+    <section class="bg-surfaceCard border border-edgeBorder rounded-2xl p-5 md:p-6 space-y-5">
+      <div>
+        <div class="flex ite
